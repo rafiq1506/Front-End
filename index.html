@@ -1,0 +1,1067 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Practical Desk | Student Submissions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <style>
+        :root {
+            --font: Manrope, system-ui, sans-serif;
+            --bg: #eaf6fb;
+            --text: #0b2a3f;
+            --muted: #587a8f;
+            --accent: #0a7fb8;
+            --accent-2: #17c3d6;
+            --accent-ink: #fff;
+            --accent-grad: linear-gradient(120deg, #0a6fb0, #17c3d6);
+            --card: #fff;
+            --card-border: #d4eaf4;
+            --field-bg: #f6fbfe;
+            --field-border: #c6e1ee;
+            --ok: #0d9a6a;
+            --err: #d6334a;
+            --info: #0a7fb8;
+            --radius: 18px;
+            --radius-sm: 12px;
+            --shadow: 0 30px 60px rgba(8, 70, 110, .16), 0 4px 12px rgba(8, 70, 110, .08);
+            --ease: cubic-bezier(.22, .8, .26, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font);
+            font-size: 15px;
+            line-height: 1.55;
+            color: var(--text);
+            background: linear-gradient(180deg, #eaf6fb 0%, #d9f0f8 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        button,
+        input {
+            font: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        svg {
+            width: 19px;
+            height: 19px;
+            flex-shrink: 0;
+        }
+
+        a {
+            color: var(--accent);
+        }
+
+        p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        .bg-deco {
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: 560px;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-deco span:nth-child(1) {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 420px;
+            background: linear-gradient(160deg, #03256c 0%, #0a5fa8 55%, #17b6d4 100%);
+        }
+
+        .bg-deco span:nth-child(2) {
+            position: absolute;
+            left: -10%;
+            width: 120%;
+            top: 360px;
+            height: 120px;
+            border-radius: 50%;
+            background: #eaf6fb;
+        }
+
+        #portal {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            padding: 48px 6% 16px;
+            text-align: center;
+        }
+
+        .brand {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-mark {
+            width: 56px;
+            height: 56px;
+            display: grid;
+            place-items: center;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .16);
+            border: 1px solid rgba(255, 255, 255, .4);
+            color: #fff;
+            backdrop-filter: blur(8px);
+        }
+
+        .brand-text {
+            font-size: clamp(20px, 3.2vw, 30px);
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 4px 24px rgba(0, 20, 60, .35);
+        }
+
+        .brand-sub-1 {
+            font-size: 20px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.85);
+            margin-top: -6px;
+        }
+
+        .brand-sub-2 {
+            font-size: 15px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.85);
+            /* margin-top: -6px; */
+        }
+
+        main {
+            width: min(780px, 92vw);
+            margin: 28px auto;
+            padding: 40px 44px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: calc(var(--radius) + 6px);
+            box-shadow: var(--shadow);
+            animation: rise .6s var(--ease) both;
+        }
+
+        .intro {
+            font-size: clamp(22px, 3vw, 28px);
+            font-weight: 800;
+            text-align: center;
+            color: #0a4f85;
+            margin-bottom: 6px;
+        }
+
+        .lead {
+            text-align: center;
+            margin: 0 auto 28px;
+            max-width: 52ch;
+            font-size: 14px;
+        }
+
+        section {
+            padding: 24px 0;
+            border-top: 1px solid var(--card-border);
+        }
+
+        section:first-child {
+            border-top: none;
+            padding-top: 0;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .step {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 800;
+            color: #fff;
+            background: var(--accent-grad);
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .wide {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #2f5f7c;
+        }
+
+        input {
+            width: 100%;
+            min-height: 48px;
+            padding: 12px 14px;
+            background: var(--field-bg);
+            border: 1.5px solid var(--field-border);
+            border-radius: var(--radius-sm);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent);
+        }
+
+        .drop {
+            margin-top: 8px;
+            min-height: 150px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-align: center;
+            background: linear-gradient(180deg, #eaf7fc 0%, #d8f1f9 100%);
+            border: 2px dashed #7cc6e3;
+            border-radius: var(--radius);
+        }
+
+        .upload-symbol {
+            width: 36px;
+            height: 36px;
+            color: var(--accent);
+        }
+
+        .choose {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            font-weight: 650;
+            color: var(--accent);
+            background: var(--card);
+            border: 1px solid #9fd3ea;
+            border-radius: 999px;
+        }
+
+        .file-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+            padding: 12px 14px;
+            background: var(--card);
+            border: 1px solid var(--field-border);
+            border-radius: var(--radius-sm);
+        }
+
+        .file-row>div {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .icon-button {
+            border: 0;
+            background: transparent;
+            color: var(--muted);
+            padding: 8px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+        }
+
+        .primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 48px;
+            padding: 12px 28px;
+            border: 0;
+            border-radius: 999px;
+            font-weight: 700;
+            color: var(--accent-ink);
+            background: var(--accent-grad);
+            box-shadow: 0 10px 24px color-mix(in srgb, var(--accent) 35%, transparent);
+        }
+
+        .primary:disabled {
+            opacity: .55;
+            cursor: wait;
+        }
+
+        .practical-item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 14px 18px;
+            margin-bottom: 10px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-left: 4px solid var(--accent-2);
+            border-radius: var(--radius);
+        }
+
+        .practical-row-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .row-number {
+            width: 32px;
+            height: 32px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            font-weight: 800;
+            font-size: 13px;
+            color: #fff;
+            background: var(--accent-grad);
+        }
+
+        .upload-state {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 999px;
+        }
+
+        .upload-state.uploaded {
+            color: var(--ok);
+            background: color-mix(in srgb, var(--ok) 14%, transparent);
+        }
+
+        .upload-state.uploading {
+            color: var(--info);
+            background: color-mix(in srgb, var(--info) 14%, transparent);
+        }
+
+        .upload-state.failed {
+            color: var(--err);
+            background: color-mix(in srgb, var(--err) 14%, transparent);
+        }
+
+        .status {
+            margin-top: 18px;
+            padding: 12px 16px;
+            font-size: 13.5px;
+            color: var(--ok);
+            background: color-mix(in srgb, var(--ok) 12%, transparent);
+            border-radius: var(--radius-sm);
+            border: 1px solid color-mix(in srgb, var(--ok) 30%, transparent);
+        }
+
+        .status.error {
+            color: var(--err);
+            background: color-mix(in srgb, var(--err) 12%, transparent);
+            border-color: color-mix(in srgb, var(--err) 30%, transparent);
+        }
+
+        .success-box {
+            text-align: center;
+            padding: 10px 0 20px;
+            animation: rise .6s var(--ease) both;
+        }
+
+        .check-circle {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: #eafaf1;
+            border: 2px solid #a3e9c2;
+            display: grid;
+            place-items: center;
+            color: #108548;
+            box-shadow: 0 10px 30px rgba(16, 133, 72, .18);
+        }
+
+        .check-circle svg {
+            width: 44px;
+            height: 44px;
+            stroke-width: 2.5;
+        }
+
+        .receipt-card {
+            margin: 28px 0;
+            padding: 24px;
+            border-radius: var(--radius);
+            background: #f7fafc;
+            border: 1px dashed #bdd6e6;
+            text-align: left;
+        }
+
+        .receipt-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #dce8ef;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+        }
+
+        .receipt-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            font-size: 13.5px;
+        }
+
+        .receipt-item small {
+            color: var(--muted);
+            display: block;
+            font-size: 11.5px;
+        }
+
+        .receipt-item span {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .receipt-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 18px;
+            font-size: 13px;
+        }
+
+        .receipt-table th,
+        .receipt-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid #e1ecf2;
+            text-align: left;
+        }
+
+        .receipt-table th {
+            color: var(--muted);
+            font-weight: 600;
+            background: #eef5f9;
+        }
+
+        .success-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+
+        .support-card {
+            margin-top: 20px;
+            padding: 14px 18px;
+            background: #f0f7fb;
+            border: 1px solid #cbe4f2;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        @media print {
+            body {
+                background: #fff !important;
+                color: #000 !important;
+            }
+
+            .bg-deco,
+            header,
+            footer,
+            .success-actions,
+            #submissionPage {
+                display: none !important;
+            }
+
+            main {
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                width: 100% !important;
+                padding: 0 !important;
+            }
+
+            .receipt-card {
+                border: 2px solid #222 !important;
+                background: #fff !important;
+                border-radius: 0 !important;
+                padding: 20px !important;
+            }
+
+            .receipt-head {
+                border-bottom: 2px solid #222 !important;
+            }
+
+            .receipt-table th {
+                background: #eee !important;
+                color: #000 !important;
+            }
+
+            .check-circle {
+                border-color: #222 !important;
+                color: #000 !important;
+            }
+        }
+
+        @media (max-width: 650px) {
+            main {
+                padding: 26px 18px;
+            }
+
+            .grid,
+            .receipt-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .success-actions {
+                flex-direction: column;
+            }
+
+            .success-actions button {
+                width: 100%;
+            }
+
+            .support-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-deco" aria-hidden="true"><span></span><span></span></div>
+    <div id="portal">
+        <header>
+            <div class="brand">
+                <span class="brand-mark"><i data-lucide="graduation-cap"></i></span>
+                <span class="brand-text">SEC: Front End Web Design and Development</span>
+                <span class="brand-sub-1">Sri Venkateswara College</span>
+                <span class="brand-sub-2">Department of Mathematics</span>
+            </div>
+        </header>
+
+        <!-- FORM PAGE VIEW -->
+        <main id="submissionPage">
+            <div class="intro">Class Practical Submissions</div>
+            <p class="lead">Add each practical folder with its GitHub and live links, then submit them together.</p>
+
+            <form id="submission">
+                <section>
+                    <div class="section-heading"><span class="step">01</span>
+                        <h2>Student Details</h2>
+                    </div>
+                    <div class="grid">
+                        <div class="field wide">
+                            <label for="studentName">Full Name</label>
+                            <input id="studentName" name="studentName" autocomplete="name"
+                                placeholder="Your name as per college records" required maxlength="100">
+                        </div>
+                        <div class="field">
+                            <label for="collegeRoll">College Roll Number</label>
+                            <input id="collegeRoll" name="collegeRoll" placeholder="e.g. 24BCA018" required
+                                maxlength="60">
+                        </div>
+                        <div class="field">
+                            <label for="examRoll">Exam Roll Number</label>
+                            <input id="examRoll" name="examRoll" placeholder="Your examination roll number" required
+                                maxlength="60">
+                        </div>
+                        <div class="field wide">
+                            <label for="course">Course</label>
+                            <input id="course" name="course" placeholder="e.g. B.Sc. (Hons) Mathematics / B.A. Prog"
+                                required maxlength="100">
+                        </div>
+                        <div class="field wide">
+                            <label for="studentEmail">Student Email Address</label>
+                            <input id="studentEmail" name="email" type="email" autocomplete="email"
+                                placeholder="name@college.edu or name@gmail.com" required maxlength="254">
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="section-heading"><span class="step">02</span>
+                        <h2>Practicals &amp; Project Files</h2>
+                    </div>
+
+                    <div id="formUploads" class="upload-list" hidden>
+                        <h2 id="formUploadsTitle" style="font-size: 14px; color: var(--muted); margin-bottom: 12px;">
+                            Practical List</h2>
+                        <div id="formUploadRows"></div>
+                    </div>
+
+                    <div id="practicalEditor" class="practical-editor" hidden>
+                        <div class="field" style="margin-bottom: 14px;">
+                            <label>Project Folder</label>
+                            <div class="drop" id="drop">
+                                <i data-lucide="folder-open" class="upload-symbol"></i>
+                                <strong>Select your complete project folder</strong>
+                                <button type="button" class="choose" id="choose">
+                                    <i data-lucide="folder-up"></i><span>Choose project folder</span>
+                                </button>
+                                <span style="font-size: 12px; color: var(--muted);">Up to 1,000 files and 25 MB
+                                    extracted</span>
+                            </div>
+                            <input type="file" id="folderInput" webkitdirectory directory multiple hidden>
+                            <div class="file-row" id="selected" hidden>
+                                <i data-lucide="folder"></i>
+                                <div><strong id="fileName"></strong><small id="fileInfo"></small></div>
+                                <button class="icon-button" id="remove" type="button" title="Remove folder"><i
+                                        data-lucide="x"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="grid">
+                            <div class="field wide">
+                                <label for="githubUrl">GitHub repository URL</label>
+                                <input id="githubUrl" type="url" placeholder="https://github.com/username/project"
+                                    maxlength="500">
+                            </div>
+                            <div class="field wide">
+                                <label for="liveUrl">Live website URL</label>
+                                <input id="liveUrl" type="url" placeholder="https://username.github.io/project/"
+                                    maxlength="500">
+                            </div>
+                        </div>
+
+                        <div style="display:flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
+                            <button type="button" class="choose" id="cancelPractical">Cancel</button>
+                            <button type="button" class="primary" id="savePractical"><i data-lucide="check"></i>Save
+                                practical</button>
+                        </div>
+                    </div>
+
+                    <button class="choose" id="addPractical" type="button"
+                        style="width: 100%; justify-content: center; border-style: dashed; padding: 12px; margin-top: 10px;">
+                        <i data-lucide="plus"></i><span id="addPracticalText">Add practical</span>
+                    </button>
+                </section>
+
+                <div style="display: flex; justify-content: flex-end; margin-top: 26px;">
+                    <button class="primary" id="submit" type="submit">
+                        <span id="submitText">Submit all practicals</span><i data-lucide="arrow-right"></i>
+                    </button>
+                </div>
+                <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+
+                <!-- Instructor Info Notice -->
+                <div class="support-card">
+                    <span><strong>Instructor:</strong> Dr. Mohd Rafiq</span>
+                    <span>For assistance: <a href="mailto:mdrafiq@svc.ac.in">mdrafiq@svc.ac.in</a></span>
+                </div>
+            </form>
+        </main>
+
+        <!-- SUCCESS & CONFIRMATION SLIP VIEW -->
+        <main id="successPage" hidden>
+            <div class="success-box">
+                <div class="check-circle"><i data-lucide="check"></i></div>
+                <h1 style="margin: 0 0 8px; font-size: 26px; color: #0d7348;">Submitted Successfully!</h1>
+                <p>Your practicals and project code have been registered with the department.</p>
+
+                <!-- Printable Slip -->
+                <div class="receipt-card" id="slip">
+                    <div class="receipt-head">
+                        <div>
+                            <strong style="font-size: 16px; display: block;">Practical Submission Receipt</strong>
+                            <small id="receiptDate" style="color: var(--muted);"></small>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="display:block; font-size: 11px; color: var(--muted);">Primary Receipt ID</span>
+                            <code id="receiptCode"
+                                style="font-weight: 700; color: var(--accent); font-size: 13px;"></code>
+                        </div>
+                    </div>
+
+                    <div class="receipt-grid">
+                        <div class="receipt-item"><small>Candidate Name</small><span id="slipName"></span></div>
+                        <div class="receipt-item"><small>Email Address</small><span id="slipEmail"></span></div>
+                        <div class="receipt-item"><small>College Roll Number</small><span id="slipCollegeRoll"></span>
+                        </div>
+                        <div class="receipt-item"><small>Exam Roll Number</small><span id="slipExamRoll"></span></div>
+                        <div class="receipt-item"><small>Course</small><span id="slipCourse"></span></div>
+                        <div class="receipt-item"><small>Instructor In-Charge</small><span>Dr. Mohd Rafiq</span></div>
+                    </div>
+
+                    <table class="receipt-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Practical Name</th>
+                                <th>Repository</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="slipPracticalsTable"></tbody>
+                    </table>
+                </div>
+
+                <div class="success-actions">
+                    <button type="button" class="primary" id="printSlipBtn">
+                        <i data-lucide="printer"></i>Print / Save PDF Slip
+                    </button>
+                    <button type="button" class="choose" id="submitAnotherBtn">
+                        <i data-lucide="rotate-ccw"></i>Submit Another Response
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p style="text-align: center; padding: 24px; font-size: 13px; font-weight: 800;">
+                Class Practical Submission Form &bull; Contact: <a href="mailto:mdrafiq@svc.ac.in">mdrafiq@svc.ac.in</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        const MAX_BYTES = 25 * 1024 * 1024;
+        const MAX_FILES = 1000;
+        const $ = id => document.getElementById(id);
+        const connected = !!(window.google && google.script && google.script.run);
+        const studentFields = ['studentName', 'studentEmail', 'collegeRoll', 'examRoll', 'course'];
+        let practicals = [];
+        let files = [], busy = false, preparing = false, editing = -1;
+
+        if (window.lucide) lucide.createIcons();
+
+        if (connected) {
+            google.script.run
+                .withSuccessHandler(email => {
+                    if (email && $('studentEmail')) $('studentEmail').value = email;
+                })
+                .withFailureHandler(() => { })
+                .getUserEmail();
+        }
+
+        function message(text, error = false) {
+            $('status').hidden = false;
+            $('status').textContent = text;
+            $('status').classList.toggle('error', error);
+        }
+        function saved(item) { return item.state === 'uploaded'; }
+        function draftName() { return files.length ? files[0].webkitRelativePath.split('/')[0].trim() : ''; }
+
+        function clearDraft() {
+            files = []; editing = -1;
+            $('folderInput').value = ''; $('selected').hidden = true;
+            $('githubUrl').value = ''; $('liveUrl').value = '';
+        }
+
+        function openEditor(index = -1) {
+            if (busy || preparing) return;
+            clearDraft(); editing = index;
+            if (index >= 0) {
+                const item = practicals[index];
+                files = item.files;
+                $('githubUrl').value = item.githubUrl;
+                $('liveUrl').value = item.liveUrl;
+                updateSelection();
+            }
+            $('practicalEditor').hidden = false;
+            $('addPractical').hidden = true;
+            $('savePractical').textContent = index < 0 ? 'Save practical' : 'Save changes';
+        }
+
+        function closeEditor() {
+            clearDraft();
+            $('practicalEditor').hidden = true;
+            $('addPractical').hidden = false;
+        }
+
+        function updateSelection() {
+            $('selected').hidden = !files.length;
+            if (!files.length) return;
+            $('fileName').textContent = draftName(); $('fileInfo').textContent = (files.reduce((total, f) => total + f.size, 0) / 1048576).toFixed(2) + ' MB / ' + files.length + ' files';
+        }
+
+        function pick(list) {
+            const picked = Array.from(list);
+            if (!picked.length) return;
+            if (picked.reduce((total, f) => total + f.size, 0) > MAX_BYTES) return message('Project files exceed 25 MB.', true);
+            if (picked.length > MAX_FILES || picked.some(f => !f.webkitRelativePath)) {
+                return message('Please choose a valid folder with up to 1,000 files.', true);
+            }
+            files = picked;
+            updateSelection();
+            $('status').hidden = true;
+        }
+
+        async function makeArchive() {
+            const zip = new JSZip();
+            for (const file of files) zip.file(file.webkitRelativePath, file);
+            return zip.generateAsync({ type: 'blob', compression: 'STORE' });
+        }
+
+        function renderList() {
+            $('formUploads').hidden = !practicals.length;
+            const container = $('formUploadRows');
+            container.replaceChildren();
+
+            practicals.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = 'practical-item-row';
+                row.innerHTML = `
+                    <div class="practical-row-left">
+                        <div class="row-number">${index + 1}</div>
+                        <div>
+                            <strong style="display:block; font-size:14.5px;">${item.practicalName}</strong>
+                            <small style="color:var(--muted);">${item.githubUrl ? '<a href="' + item.githubUrl + '" target="_blank">GitHub</a>' : ''}</small>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span class="upload-state ${item.state}">${item.state}</span>
+                        ${!saved(item) && !busy ? `
+                            <button type="button" class="icon-button" onclick="editItem(${index})"><i data-lucide="pencil"></i></button>
+                            <button type="button" class="icon-button" onclick="deleteItem(${index})"><i data-lucide="trash-2"></i></button>
+                        ` : ''}
+                    </div>
+                `;
+                container.append(row);
+            });
+            $('addPracticalText').textContent = practicals.length ? 'Add more practicals' : 'Add practical';
+            if (window.lucide) lucide.createIcons();
+        }
+
+        window.editItem = index => openEditor(index);
+        window.deleteItem = index => {
+            practicals.splice(index, 1);
+            renderList();
+        };
+
+        $('addPractical').onclick = () => openEditor(); $('cancelPractical').onclick = closeEditor;
+        $('choose').onclick = () => $('folderInput').click(); $('folderInput').onchange = e => pick(e.target.files);
+        $('remove').onclick = () => { files = []; $('folderInput').value = ''; updateSelection(); };
+
+        $('savePractical').onclick = async () => {
+            if (!files.length) return message('Select a project folder first.', true);
+            const name = draftName(), github = $('githubUrl').value.trim(), live = $('liveUrl').value.trim();
+            if (!/^https:\/\/(www\.)?github\.com\/[A-Za-z0-9_-]+\/[A-Za-z0-9_.-]+\/?$/.test(github)) return message('Enter a valid GitHub URL.', true);
+            if (!/^https:\/\/[^\s/?#]+(?:[/?#][^\s]*)?$/i.test(live)) return message('Enter a valid HTTPS live website URL.', true);
+
+            preparing = true;
+            try {
+                const blob = await makeArchive();
+                const item = { practicalName: name, githubUrl: github, liveUrl: live, blob: blob, files: files.slice(), archiveName: name + '.zip', state: 'ready' };
+                if (editing >= 0) practicals[editing] = item; else practicals.push(item);
+                closeEditor();
+                renderList();
+            } catch (err) {
+                message(err.message, true);
+            } finally {
+                preparing = false;
+            }
+        };
+
+        function base64(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onerror = () => reject(new Error('File reading error.'));
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        function showSuccessView(student, submittedPracticals) {
+            $('submissionPage').hidden = true;
+            $('successPage').hidden = false;
+
+            $('slipName').textContent = student.studentName;
+            $('slipEmail').textContent = student.studentEmail;
+            $('slipCollegeRoll').textContent = student.collegeRoll;
+            $('slipExamRoll').textContent = student.examRoll;
+            $('slipCourse').textContent = student.course;
+            $('receiptDate').textContent = new Date().toLocaleString();
+
+            const primaryReceipt = submittedPracticals[0]?.result?.receipt || ('REC-' + Math.random().toString(36).substring(2, 9).toUpperCase());
+            $('receiptCode').textContent = primaryReceipt;
+
+            const tbody = $('slipPracticalsTable');
+            tbody.innerHTML = '';
+            submittedPracticals.forEach((p, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td><strong>${p.practicalName}</strong></td>
+                    <td><a href="${p.githubUrl}" target="_blank">View Repo</a></td>
+                    <td><span style="color:#0d9a6a; font-weight:700;">Verified</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            if (window.lucide) lucide.createIcons();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        $('submission').onsubmit = async e => {
+            e.preventDefault();
+            if (busy || preparing) return;
+            const remaining = practicals.filter(item => !saved(item));
+            if (!remaining.length) return message('Add at least one practical to submit.', true);
+
+            const student = Object.fromEntries(studentFields.map(id => [id, $(id).value.trim()]));
+            if (Object.values(student).some(v => !v)) return message('Fill in all student fields.', true);
+
+            busy = true;
+            $('submit').disabled = true;
+
+            try {
+                for (let i = 0; i < remaining.length; i++) {
+                    const item = remaining[i];
+                    item.state = 'uploading';
+                    $('submitText').textContent = `Submitting ${i + 1} of ${remaining.length}...`;
+                    renderList();
+
+                    let attempts = 0;
+                    let success = false;
+                    let lastError = null;
+
+                    while (attempts < 3 && !success) {
+                        try {
+                            attempts++;
+                            const payload = Object.assign({}, student, {
+                                practicalName: item.practicalName,
+                                githubUrl: item.githubUrl,
+                                liveUrl: item.liveUrl,
+                                archiveName: item.archiveName,
+                                archiveBase64: await base64(item.blob)
+                            });
+
+                            let result;
+                            if (connected) {
+                                result = await new Promise((resolve, reject) => {
+                                    google.script.run
+                                        .withSuccessHandler(resolve)
+                                        .withFailureHandler(reject)
+                                        .submitPractical(payload);
+                                });
+                            } else {
+                                await new Promise(r => setTimeout(r, 800));
+                                result = { receipt: 'PREVIEW-' + Math.random().toString(36).slice(2, 9), submittedAt: new Date().toISOString(), sheetSaved: true };
+                            }
+
+                            item.result = result;
+                            item.state = 'uploaded';
+                            item.blob = null;
+                            success = true;
+                        } catch (err) {
+                            lastError = err;
+                            if (attempts < 3) {
+                                await new Promise(r => setTimeout(r, 2000));
+                            }
+                        }
+                    }
+
+                    if (!success) {
+                        item.state = 'failed';
+                        renderList();
+                        throw new Error(`Failed uploading "${item.practicalName}": ${lastError.message || lastError}`);
+                    }
+                }
+
+                // Send email receipt from the authenticated session
+                // Send email receipt with sanitized, JSON-serializable practical data
+                if (connected) {
+                    const sanitizedList = practicals.map(p => ({
+                        practicalName: p.practicalName,
+                        githubUrl: p.githubUrl,
+                        liveUrl: p.liveUrl,
+                        receipt: p.result?.receipt || ''
+                    }));
+
+                    google.script.run
+                        .withFailureHandler(err => console.error('Receipt email failed: ' + err))
+                        .sendBatchReceiptEmail(student, sanitizedList);
+                }
+
+                renderList();
+                showSuccessView(student, practicals);
+
+            } catch (err) {
+                message(err.message, true);
+            } finally {
+                busy = false;
+                $('submit').disabled = false;
+                $('submitText').textContent = 'Submit all practicals';
+            }
+        };
+
+        $('printSlipBtn').onclick = () => window.print();
+
+        $('submitAnotherBtn').onclick = () => {
+            practicals = [];
+            clearDraft();
+            renderList();
+            $('status').hidden = true;
+            $('submissionPage').hidden = false;
+            $('successPage').hidden = true;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+    </script>
+</body>
+
+</html>
